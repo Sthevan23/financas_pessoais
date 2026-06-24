@@ -41,6 +41,5 @@ const CONFIG = {
 /** Estado global da aplicação */
 const AppState = {
   currentUser: null,
-  sessionKey: null,
   theme: 'light'
 };

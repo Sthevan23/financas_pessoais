@@ -1,14 +1,17 @@
 /**
- * Módulo de autenticação - Login, Cadastro e Recuperação de Senha
+ * Módulo de autenticação - Supabase Auth
  */
 
 const Auth = {
   /** Inicializa eventos de autenticação */
   init() {
+    if (!isSupabaseConfigured()) {
+      this.showConfigWarning();
+    }
+
     document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
     document.getElementById('register-form').addEventListener('submit', (e) => this.handleRegister(e));
     document.getElementById('recovery-form').addEventListener('submit', (e) => this.handleRecovery(e));
-    document.getElementById('btn-reset-password').addEventListener('click', () => this.handleResetPassword());
 
     document.querySelectorAll('.auth-tab').forEach(tab => {
       tab.addEventListener('click', () => this.showForm(tab.dataset.authTab));
@@ -38,6 +41,23 @@ const Auth = {
     this.checkSession();
   },
 
+  /** Aviso quando Supabase não está configurado */
+  showConfigWarning() {
+    const container = document.querySelector('.auth-container');
+    if (!container || document.getElementById('supabase-warning')) return;
+
+    const warning = document.createElement('div');
+    warning.id = 'supabase-warning';
+    warning.className = 'supabase-warning';
+    warning.innerHTML = `
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <strong>Supabase não configurado.</strong>
+      Edite o arquivo <code>js/supabase-config.js</code> com sua URL e chave do projeto.
+      Veja o README para instruções.
+    `;
+    container.prepend(warning);
+  },
+
   /** Alterna formulários de auth */
   showForm(form) {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -54,55 +74,80 @@ const Auth = {
   },
 
   /** Verifica sessão existente */
-  checkSession() {
-    const session = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'session');
-    if (session) {
-      try {
-        const { userId, sessionKey } = JSON.parse(session);
-        const user = Database.getUsers().find(u => u.id === userId);
-        if (user) {
-          AppState.currentUser = user;
-          AppState.sessionKey = sessionKey;
-          this.showApp();
-          return;
-        }
-      } catch { /* sessão inválida */ }
+  async checkSession() {
+    const client = getSupabase();
+    if (!client) {
+      this.showAuth();
+      return;
     }
-    this.showAuth();
+
+    const { data: { session } } = await client.auth.getSession();
+
+    if (session) {
+      await this.setUserFromSession(session);
+      this.showApp();
+    } else {
+      this.showAuth();
+    }
+
+    client.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        await this.setUserFromSession(session);
+      } else if (event === 'SIGNED_OUT') {
+        AppState.currentUser = null;
+      }
+    });
+  },
+
+  /** Carrega dados do usuário da sessão Supabase */
+  async setUserFromSession(session) {
+    const client = getSupabase();
+    const { data: profile } = await client
+      .from('profiles')
+      .select('name')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    AppState.currentUser = {
+      id: session.user.id,
+      email: session.user.email,
+      name: profile?.name || session.user.user_metadata?.name || 'Usuário'
+    };
   },
 
   /** Login do usuário */
   async handleLogin(e) {
     e.preventDefault();
+    if (!getSupabase()) {
+      showToast('Configure o Supabase primeiro', 'error');
+      return;
+    }
+
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
-    const user = Database.findUserByEmail(email);
-    if (!user) {
-      showToast('E-mail ou senha incorretos', 'error');
-      return;
+    try {
+      const { data, error } = await getSupabase().auth.signInWithPassword({ email, password });
+      if (error) throw error;
+
+      await this.setUserFromSession(data.session);
+      showToast(`Bem-vindo, ${AppState.currentUser.name}!`, 'success');
+      this.showApp();
+    } catch (err) {
+      showToast(err.message === 'Invalid login credentials'
+        ? 'E-mail ou senha incorretos'
+        : err.message, 'error');
     }
-
-    const hash = await CryptoModule.hashPassword(password, user.salt);
-    if (hash !== user.passwordHash) {
-      showToast('E-mail ou senha incorretos', 'error');
-      return;
-    }
-
-    AppState.currentUser = user;
-    AppState.sessionKey = password;
-    localStorage.setItem(CONFIG.STORAGE_PREFIX + 'session', JSON.stringify({
-      userId: user.id,
-      sessionKey: password
-    }));
-
-    showToast(`Bem-vindo, ${user.name}!`, 'success');
-    this.showApp();
   },
 
   /** Cadastro de novo usuário */
   async handleRegister(e) {
     e.preventDefault();
+    if (!getSupabase()) {
+      showToast('Configure o Supabase primeiro', 'error');
+      return;
+    }
+
     const name = document.getElementById('register-name').value.trim();
     const email = document.getElementById('register-email').value.trim();
     const password = document.getElementById('register-password').value;
@@ -116,105 +161,60 @@ const Auth = {
       showToast('A senha deve ter no mínimo 6 caracteres', 'error');
       return;
     }
-    if (Database.findUserByEmail(email)) {
-      showToast('Este e-mail já está cadastrado', 'error');
-      return;
+
+    try {
+      const { data, error } = await getSupabase().auth.signUp({
+        email,
+        password,
+        options: { data: { name } }
+      });
+      if (error) throw error;
+
+      if (data.session) {
+        await this.setUserFromSession(data.session);
+        await Database.initDefaultCategories(data.user.id);
+        showToast('Conta criada com sucesso!', 'success');
+        this.showApp();
+      } else {
+        showToast('Conta criada! Verifique seu e-mail para confirmar o cadastro.', 'info');
+        this.showForm('login');
+      }
+    } catch (err) {
+      showToast(err.message.includes('already registered')
+        ? 'Este e-mail já está cadastrado'
+        : err.message, 'error');
     }
-
-    const salt = CryptoModule.generateSalt();
-    const passwordHash = await CryptoModule.hashPassword(password, salt);
-
-    const user = {
-      id: generateId(),
-      name,
-      email,
-      passwordHash,
-      salt,
-      createdAt: new Date().toISOString(),
-      recoveryToken: null
-    };
-
-    const users = Database.getUsers();
-    users.push(user);
-    Database.saveUsers(users);
-
-    AppState.currentUser = user;
-    AppState.sessionKey = password;
-    localStorage.setItem(CONFIG.STORAGE_PREFIX + 'session', JSON.stringify({
-      userId: user.id,
-      sessionKey: password
-    }));
-
-    await Database.initDefaultCategories(user.id);
-
-    showToast('Conta criada com sucesso!', 'success');
-    this.showApp();
   },
 
-  /** Solicita token de recuperação */
+  /** Recuperação de senha via e-mail Supabase */
   async handleRecovery(e) {
     e.preventDefault();
+    if (!getSupabase()) {
+      showToast('Configure o Supabase primeiro', 'error');
+      return;
+    }
+
     const email = document.getElementById('recovery-email').value.trim();
-    const user = Database.findUserByEmail(email);
 
-    if (!user) {
-      showToast('E-mail não encontrado', 'error');
-      return;
+    try {
+      const { error } = await getSupabase().auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) throw error;
+
+      showToast('Link de recuperação enviado para seu e-mail!', 'success');
+      this.showForm('login');
+    } catch (err) {
+      showToast(err.message, 'error');
     }
-
-    const token = CryptoModule.generateRecoveryToken();
-    user.recoveryToken = token;
-    user.recoveryTokenExpiry = Date.now() + 3600000;
-
-    const users = Database.getUsers();
-    const index = users.findIndex(u => u.id === user.id);
-    users[index] = user;
-    Database.saveUsers(users);
-
-    document.getElementById('recovery-token-section').classList.remove('hidden');
-    showToast(`Token gerado: ${token}`, 'info');
-  },
-
-  /** Redefine senha com token */
-  async handleResetPassword() {
-    const email = document.getElementById('recovery-email').value.trim();
-    const token = document.getElementById('recovery-token').value.trim();
-    const newPassword = document.getElementById('recovery-new-password').value;
-
-    const user = Database.findUserByEmail(email);
-    if (!user || user.recoveryToken !== token) {
-      showToast('Token inválido', 'error');
-      return;
-    }
-    if (user.recoveryTokenExpiry && Date.now() > user.recoveryTokenExpiry) {
-      showToast('Token expirado. Solicite um novo.', 'error');
-      return;
-    }
-    if (newPassword.length < 6) {
-      showToast('A senha deve ter no mínimo 6 caracteres', 'error');
-      return;
-    }
-
-    const salt = CryptoModule.generateSalt();
-    user.passwordHash = await CryptoModule.hashPassword(newPassword, salt);
-    user.salt = salt;
-    user.recoveryToken = null;
-    user.recoveryTokenExpiry = null;
-
-    const users = Database.getUsers();
-    const index = users.findIndex(u => u.id === user.id);
-    users[index] = user;
-    Database.saveUsers(users);
-
-    showToast('Senha redefinida com sucesso!', 'success');
-    this.showForm('login');
   },
 
   /** Logout */
-  logout() {
+  async logout() {
+    const client = getSupabase();
+    if (client) await client.auth.signOut();
     AppState.currentUser = null;
-    AppState.sessionKey = null;
-    localStorage.removeItem(CONFIG.STORAGE_PREFIX + 'session');
+    App.initialized = false;
     this.showAuth();
     showToast('Você saiu da conta', 'info');
   },

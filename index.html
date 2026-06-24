@@ -116,7 +116,7 @@
             <i class="fa-solid fa-arrow-left"></i> Voltar
           </button>
           <h2>Recuperar Senha</h2>
-          <p class="auth-subtitle">Informe seu e-mail para receber um token de recuperação</p>
+          <p class="auth-subtitle">Enviaremos um link de redefinição para seu e-mail</p>
           <div class="form-group auth-field">
             <label for="recovery-email">E-mail</label>
             <div class="auth-input-wrap">
@@ -124,24 +124,7 @@
               <input type="email" id="recovery-email" required placeholder="seu@email.com">
             </div>
           </div>
-          <button type="submit" class="btn btn-auth btn-block">Enviar Token</button>
-          <div id="recovery-token-section" class="hidden">
-            <div class="form-group auth-field">
-              <label for="recovery-token">Token de Recuperação</label>
-              <div class="auth-input-wrap">
-                <i class="fa-solid fa-key"></i>
-                <input type="text" id="recovery-token" placeholder="Cole o token aqui">
-              </div>
-            </div>
-            <div class="form-group auth-field">
-              <label for="recovery-new-password">Nova Senha</label>
-              <div class="auth-input-wrap">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="recovery-new-password" minlength="6" placeholder="Nova senha">
-              </div>
-            </div>
-            <button type="button" id="btn-reset-password" class="btn btn-auth btn-block">Redefinir Senha</button>
-          </div>
+          <button type="submit" class="btn btn-auth btn-block">Enviar Link de Recuperação</button>
         </form>
       </div>
     </div>
@@ -524,8 +507,8 @@
               </div>
             </div>
             <div class="card">
-              <h3><i class="fa-solid fa-database"></i> Backup e Restauração</h3>
-              <p>Exporte ou importe todos os seus dados financeiros.</p>
+              <h3><i class="fa-solid fa-database"></i> Backup e Nuvem</h3>
+              <p>Seus dados são salvos automaticamente no Supabase. Exporte um backup local quando quiser.</p>
               <div class="form-actions">
                 <button class="btn btn-primary" id="btn-backup"><i class="fa-solid fa-download"></i> Fazer Backup</button>
                 <label class="btn btn-outline btn-file">
@@ -566,9 +549,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/crypto.js"></script>
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/categories.js"></script>

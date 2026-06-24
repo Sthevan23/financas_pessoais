@@ -23,6 +23,11 @@ const App = {
     CreditCards.init();
     Notifications.init();
 
+    const categories = await Database.getCategories();
+    if (categories.length === 0) {
+      await Database.initDefaultCategories(AppState.currentUser.id);
+    }
+
     await Categories.populateSelects();
     await CreditCards.populateSelect();
 

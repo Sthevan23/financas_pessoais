@@ -2,9 +2,9 @@
  * Funções utilitárias gerais
  */
 
-/** Gera ID único */
+/** Gera ID único (UUID) */
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+  return crypto.randomUUID();
 }
 
 /** Formata valor monetário */
