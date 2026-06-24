@@ -1,0 +1,336 @@
+/* Responsividade */
+
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+  .chart-card.wide { grid-column: 1; }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  .report-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .page-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .page-header .btn,
+  .page-header .filter-bar,
+  .page-header .calendar-nav,
+  .page-header .header-actions-group {
+    width: 100%;
+  }
+
+  .page-header .header-actions-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .page-header .header-actions-group .btn {
+    flex: 1;
+  }
+
+  .page-header .btn {
+    justify-content: center;
+  }
+
+  .filter-bar select,
+  .filters-row select,
+  .filters-row input[type="date"] {
+    width: 100%;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .transaction-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+  }
+
+  .transaction-icon {
+    grid-row: 1 / 3;
+  }
+
+  .transaction-info {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .transaction-amount {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 0.875rem;
+  }
+
+  .transaction-actions {
+    grid-column: 3;
+    grid-row: 2;
+    width: auto;
+    margin-top: 0;
+    justify-content: flex-end;
+  }
+
+  .header-search {
+    max-width: none;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-info span {
+    display: none;
+  }
+
+  .cal-day {
+    min-height: 50px;
+    padding: 0.25rem;
+  }
+
+  .cal-day-number {
+    font-size: 0.6875rem;
+  }
+
+  .top-header {
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .categories-grid,
+  .goals-grid,
+  .cards-grid,
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-card {
+    padding: 0.875rem 1rem;
+    min-height: 72px;
+  }
+
+  .category-info h4 {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .category-actions .btn-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.125rem;
+  }
+
+  .chart-card {
+    min-height: 260px;
+    padding: 1rem;
+  }
+
+  .calendar-nav {
+    justify-content: space-between;
+  }
+
+  .calendar-nav span {
+    flex: 1;
+    text-align: center;
+  }
+
+  .dropdown-panel {
+    width: min(320px, calc(100vw - 2rem));
+    right: -0.5rem;
+  }
+
+  .modal {
+    max-width: calc(100vw - 2rem);
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .header-actions-group .btn {
+    width: 100%;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .toast {
+    min-width: auto;
+  }
+
+  .modal {
+    max-height: 95vh;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .page-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .category-card {
+    gap: 0.75rem;
+  }
+
+  .category-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 0.9375rem;
+  }
+
+  .goal-card,
+  .credit-card-item {
+    padding: 1rem;
+  }
+
+  .goal-header {
+    gap: 0.5rem;
+  }
+
+  .goal-header .btn-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .installment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .installment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .report-table {
+    font-size: 0.8125rem;
+  }
+
+  .report-table th,
+  .report-table td {
+    padding: 0.5rem;
+  }
+
+  .top-header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--header-height);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .header-search {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .btn-icon {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Sidebar collapsed on desktop */
+@media (min-width: 993px) {
+  .app.sidebar-collapsed .sidebar {
+    width: var(--sidebar-collapsed);
+  }
+
+  .app.sidebar-collapsed .sidebar .sidebar-brand span,
+  .app.sidebar-collapsed .sidebar .nav-item span,
+  .app.sidebar-collapsed .sidebar .sidebar-footer span {
+    display: none;
+  }
+}

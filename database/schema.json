@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "description": "Esquema de dados do Finanças Pessoais - LocalStorage",
+  "collections": {
+    "users": {
+      "fields": ["id", "name", "email", "passwordHash", "salt", "createdAt", "recoveryToken"]
+    },
+    "transactions": {
+      "fields": ["id", "userId", "type", "description", "amount", "date", "categoryId", "paymentMethod", "notes", "installments", "installmentNumber", "parentId", "dueDate", "paid", "creditCardId"]
+    },
+    "categories": {
+      "fields": ["id", "userId", "name", "type", "icon", "color"]
+    },
+    "goals": {
+      "fields": ["id", "userId", "name", "targetAmount", "currentAmount", "deadline", "createdAt"]
+    },
+    "creditCards": {
+      "fields": ["id", "userId", "name", "limit", "closingDay", "dueDay", "color"]
+    },
+    "settings": {
+      "fields": ["userId", "theme", "sidebarCollapsed", "currency"]
+    }
+  },
+  "defaultCategories": [
+    { "name": "Alimentação", "type": "expense", "icon": "fa-utensils", "color": "#ef4444" },
+    { "name": "Transporte", "type": "expense", "icon": "fa-car", "color": "#f97316" },
+    { "name": "Moradia", "type": "expense", "icon": "fa-house", "color": "#eab308" },
+    { "name": "Saúde", "type": "expense", "icon": "fa-heart-pulse", "color": "#22c55e" },
+    { "name": "Educação", "type": "expense", "icon": "fa-graduation-cap", "color": "#3b82f6" },
+    { "name": "Lazer", "type": "expense", "icon": "fa-gamepad", "color": "#8b5cf6" },
+    { "name": "Investimentos", "type": "income", "icon": "fa-chart-line", "color": "#06b6d4" },
+    { "name": "Cartão de Crédito", "type": "expense", "icon": "fa-credit-card", "color": "#ec4899" },
+    { "name": "Combustível", "type": "expense", "icon": "fa-gas-pump", "color": "#f59e0b" },
+    { "name": "Internet", "type": "expense", "icon": "fa-wifi", "color": "#6366f1" },
+    { "name": "Água", "type": "expense", "icon": "fa-droplet", "color": "#0ea5e9" },
+    { "name": "Energia", "type": "expense", "icon": "fa-bolt", "color": "#fbbf24" },
+    { "name": "Salário", "type": "income", "icon": "fa-money-bill-wave", "color": "#10b981" },
+    { "name": "Freelance", "type": "income", "icon": "fa-laptop", "color": "#14b8a6" },
+    { "name": "Outros", "type": "both", "icon": "fa-ellipsis", "color": "#64748b" }
+  ]
+}

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Finanças Pessoais - Controle completo de receitas e despesas">
+  <title>Finanças Pessoais</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <!-- ========== TELA DE AUTENTICAÇÃO ========== -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-bg">
+      <div class="auth-blob auth-blob-1"></div>
+      <div class="auth-blob auth-blob-2"></div>
+      <div class="auth-blob auth-blob-3"></div>
+    </div>
+
+    <div class="auth-wrapper">
+      <aside class="auth-showcase">
+        <div class="auth-showcase-content">
+          <div class="auth-logo-large">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h1>Finanças Pessoais</h1>
+          <p>Organize seu dinheiro, alcance suas metas e tome decisões com confiança.</p>
+          <ul class="auth-features">
+            <li><i class="fa-solid fa-shield-halved"></i> Dados criptografados e seguros</li>
+            <li><i class="fa-solid fa-chart-pie"></i> Relatórios e gráficos intuitivos</li>
+            <li><i class="fa-solid fa-mobile-screen"></i> Acesse de qualquer dispositivo</li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="auth-container">
+        <div class="auth-mobile-brand">
+          <div class="auth-logo-small"><i class="fa-solid fa-chart-line"></i></div>
+          <span>Finanças Pessoais</span>
+        </div>
+
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab active" data-auth-tab="login">Entrar</button>
+          <button type="button" class="auth-tab" data-auth-tab="register">Cadastrar</button>
+        </div>
+
+        <!-- Login -->
+        <form id="login-form" class="auth-form active">
+          <h2>Bem-vindo de volta</h2>
+          <p class="auth-subtitle">Entre na sua conta para continuar</p>
+          <div class="form-group auth-field">
+            <label for="login-email">E-mail</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="login-email" required placeholder="seu@email.com">
+            </div>
+          </div>
+          <div class="form-group auth-field">
+            <label for="login-password">Senha</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="login-password" required placeholder="••••••••">
+              <button type="button" class="btn-toggle-password" data-target="login-password"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="auth-forgot">
+            <a href="#" id="show-recovery">Esqueci minha senha</a>
+          </div>
+          <button type="submit" class="btn btn-auth btn-block">Entrar</button>
+        </form>
+
+        <!-- Cadastro -->
+        <form id="register-form" class="auth-form">
+          <h2>Crie sua conta</h2>
+          <p class="auth-subtitle">Comece a controlar suas finanças hoje</p>
+          <div class="form-group auth-field">
+            <label for="register-name">Nome</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="register-name" required placeholder="Seu nome completo">
+            </div>
+          </div>
+          <div class="form-group auth-field">
+            <label for="register-email">E-mail</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="register-email" required placeholder="seu@email.com">
+            </div>
+          </div>
+          <div class="form-group auth-field">
+            <label for="register-password">Senha</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="register-password" required minlength="6" placeholder="Mínimo 6 caracteres">
+              <button type="button" class="btn-toggle-password" data-target="register-password"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="form-group auth-field">
+            <label for="register-confirm">Confirmar Senha</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="register-confirm" required placeholder="Repita a senha">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-auth btn-block">Criar Conta</button>
+        </form>
+
+        <!-- Recuperação -->
+        <form id="recovery-form" class="auth-form">
+          <button type="button" class="auth-back" id="show-login-from-recovery">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+          <h2>Recuperar Senha</h2>
+          <p class="auth-subtitle">Informe seu e-mail para receber um token de recuperação</p>
+          <div class="form-group auth-field">
+            <label for="recovery-email">E-mail</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="recovery-email" required placeholder="seu@email.com">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-auth btn-block">Enviar Token</button>
+          <div id="recovery-token-section" class="hidden">
+            <div class="form-group auth-field">
+              <label for="recovery-token">Token de Recuperação</label>
+              <div class="auth-input-wrap">
+                <i class="fa-solid fa-key"></i>
+                <input type="text" id="recovery-token" placeholder="Cole o token aqui">
+              </div>
+            </div>
+            <div class="form-group auth-field">
+              <label for="recovery-new-password">Nova Senha</label>
+              <div class="auth-input-wrap">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="recovery-new-password" minlength="6" placeholder="Nova senha">
+              </div>
+            </div>
+            <button type="button" id="btn-reset-password" class="btn btn-auth btn-block">Redefinir Senha</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== APLICAÇÃO PRINCIPAL ========== -->
+  <div id="app" class="app hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Finanças</span>
+        </div>
+        <button id="sidebar-toggle" class="btn-icon" title="Recolher menu"><i class="fa-solid fa-bars"></i></button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+        <a href="#" class="nav-item" data-page="transactions"><i class="fa-solid fa-exchange-alt"></i><span>Lançamentos</span></a>
+        <a href="#" class="nav-item" data-page="income"><i class="fa-solid fa-arrow-down"></i><span>Receitas</span></a>
+        <a href="#" class="nav-item" data-page="expense"><i class="fa-solid fa-arrow-up"></i><span>Despesas</span></a>
+        <a href="#" class="nav-item" data-page="categories"><i class="fa-solid fa-tags"></i><span>Categorias</span></a>
+        <a href="#" class="nav-item" data-page="reports"><i class="fa-solid fa-file-alt"></i><span>Relatórios</span></a>
+        <a href="#" class="nav-item" data-page="goals"><i class="fa-solid fa-bullseye"></i><span>Metas</span></a>
+        <a href="#" class="nav-item" data-page="calendar"><i class="fa-solid fa-calendar"></i><span>Calendário</span></a>
+        <a href="#" class="nav-item" data-page="credit-cards"><i class="fa-solid fa-credit-card"></i><span>Cartões</span></a>
+        <a href="#" class="nav-item" data-page="installments"><i class="fa-solid fa-layer-group"></i><span>Parcelas</span></a>
+        <a href="#" class="nav-item" data-page="settings"><i class="fa-solid fa-cog"></i><span>Configurações</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btn-logout" class="btn btn-outline btn-block"><i class="fa-solid fa-sign-out-alt"></i><span>Sair</span></button>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="top-header">
+        <button id="mobile-menu-btn" class="btn-icon mobile-only"><i class="fa-solid fa-bars"></i></button>
+        <div class="header-search">
+          <i class="fa-solid fa-search"></i>
+          <input type="search" id="global-search" placeholder="Pesquisar lançamentos...">
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle" class="btn-icon" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+          <div class="notifications-wrapper">
+            <button id="notifications-btn" class="btn-icon" title="Notificações">
+              <i class="fa-solid fa-bell"></i>
+              <span id="notification-badge" class="badge hidden">0</span>
+            </button>
+            <div id="notifications-panel" class="dropdown-panel hidden">
+              <h4>Contas a Vencer</h4>
+              <div id="notifications-list"></div>
+            </div>
+          </div>
+          <div class="user-info">
+            <span id="user-name-display">Usuário</span>
+            <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Páginas -->
+      <div class="page-content">
+
+        <!-- DASHBOARD -->
+        <section id="page-dashboard" class="page active">
+          <div class="page-header">
+            <h2>Dashboard</h2>
+            <div class="filter-bar" id="dashboard-filters">
+              <select id="dashboard-period">
+                <option value="day">Hoje</option>
+                <option value="week">Esta Semana</option>
+                <option value="month" selected>Este Mês</option>
+                <option value="year">Este Ano</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card balance">
+              <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Saldo Atual</span>
+                <span class="stat-value" id="stat-balance">R$ 0,00</span>
+              </div>
+            </div>
+            <div class="stat-card income">
+              <div class="stat-icon"><i class="fa-solid fa-arrow-down"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Receitas</span>
+                <span class="stat-value" id="stat-income">R$ 0,00</span>
+              </div>
+            </div>
+            <div class="stat-card expense">
+              <div class="stat-icon"><i class="fa-solid fa-arrow-up"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Despesas</span>
+                <span class="stat-value" id="stat-expense">R$ 0,00</span>
+              </div>
+            </div>
+            <div class="stat-card savings">
+              <div class="stat-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Economia do Mês</span>
+                <span class="stat-value" id="stat-savings">R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="card chart-card">
+              <h3>Receitas vs Despesas</h3>
+              <canvas id="chart-comparison"></canvas>
+            </div>
+            <div class="card chart-card">
+              <h3>Despesas por Categoria</h3>
+              <canvas id="chart-categories"></canvas>
+            </div>
+            <div class="card chart-card wide">
+              <h3>Evolução do Saldo</h3>
+              <canvas id="chart-balance"></canvas>
+            </div>
+            <div class="card chart-card wide">
+              <h3>Receitas e Despesas por Mês</h3>
+              <canvas id="chart-monthly"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Últimos Lançamentos</h3>
+            <div id="recent-transactions" class="transactions-list"></div>
+          </div>
+        </section>
+
+        <!-- LANÇAMENTOS -->
+        <section id="page-transactions" class="page">
+          <div class="page-header">
+            <h2>Lançamentos</h2>
+            <div class="header-actions-group">
+              <button class="btn btn-success" id="btn-new-income"><i class="fa-solid fa-plus"></i> Receita</button>
+              <button class="btn btn-danger" id="btn-new-expense"><i class="fa-solid fa-plus"></i> Despesa</button>
+            </div>
+          </div>
+          <div class="filters-panel card">
+            <div class="filters-row">
+              <select id="filter-period">
+                <option value="all">Todos</option>
+                <option value="day">Hoje</option>
+                <option value="week">Esta Semana</option>
+                <option value="month">Este Mês</option>
+                <option value="year">Este Ano</option>
+              </select>
+              <select id="filter-type">
+                <option value="all">Todos os Tipos</option>
+                <option value="income">Receitas</option>
+                <option value="expense">Despesas</option>
+              </select>
+              <select id="filter-category"><option value="all">Todas Categorias</option></select>
+              <input type="date" id="filter-date-from" title="Data inicial">
+              <input type="date" id="filter-date-to" title="Data final">
+              <button class="btn btn-outline" id="btn-clear-filters"><i class="fa-solid fa-times"></i> Limpar</button>
+            </div>
+          </div>
+          <div class="card">
+            <div id="transactions-list" class="transactions-list"></div>
+          </div>
+        </section>
+
+        <!-- RECEITAS -->
+        <section id="page-income" class="page">
+          <div class="page-header">
+            <h2>Cadastro de Receitas</h2>
+          </div>
+          <div class="card form-card">
+            <form id="income-form">
+              <input type="hidden" id="income-id">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="income-description">Descrição *</label>
+                  <input type="text" id="income-description" required placeholder="Ex: Salário mensal">
+                </div>
+                <div class="form-group">
+                  <label for="income-amount">Valor *</label>
+                  <input type="number" id="income-amount" required min="0.01" step="0.01" placeholder="0,00">
+                </div>
+                <div class="form-group">
+                  <label for="income-date">Data *</label>
+                  <input type="date" id="income-date" required>
+                </div>
+                <div class="form-group">
+                  <label for="income-category">Categoria *</label>
+                  <select id="income-category" required></select>
+                </div>
+                <div class="form-group">
+                  <label for="income-payment">Forma de Pagamento</label>
+                  <select id="income-payment">
+                    <option value="pix">PIX</option>
+                    <option value="transfer">Transferência</option>
+                    <option value="cash">Dinheiro</option>
+                    <option value="debit">Débito</option>
+                    <option value="credit">Crédito</option>
+                    <option value="other">Outro</option>
+                  </select>
+                </div>
+                <div class="form-group full">
+                  <label for="income-notes">Observações</label>
+                  <textarea id="income-notes" rows="2" placeholder="Observações adicionais..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Salvar Receita</button>
+                <button type="reset" class="btn btn-outline">Limpar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- DESPESAS -->
+        <section id="page-expense" class="page">
+          <div class="page-header">
+            <h2>Cadastro de Despesas</h2>
+          </div>
+          <div class="card form-card">
+            <form id="expense-form">
+              <input type="hidden" id="expense-id">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="expense-description">Descrição *</label>
+                  <input type="text" id="expense-description" required placeholder="Ex: Supermercado">
+                </div>
+                <div class="form-group">
+                  <label for="expense-amount">Valor *</label>
+                  <input type="number" id="expense-amount" required min="0.01" step="0.01" placeholder="0,00">
+                </div>
+                <div class="form-group">
+                  <label for="expense-date">Data *</label>
+                  <input type="date" id="expense-date" required>
+                </div>
+                <div class="form-group">
+                  <label for="expense-category">Categoria *</label>
+                  <select id="expense-category" required></select>
+                </div>
+                <div class="form-group">
+                  <label for="expense-payment">Forma de Pagamento</label>
+                  <select id="expense-payment">
+                    <option value="pix">PIX</option>
+                    <option value="transfer">Transferência</option>
+                    <option value="cash">Dinheiro</option>
+                    <option value="debit">Débito</option>
+                    <option value="credit">Crédito</option>
+                    <option value="other">Outro</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="expense-credit-card">Cartão de Crédito</label>
+                  <select id="expense-credit-card"><option value="">Nenhum</option></select>
+                </div>
+                <div class="form-group">
+                  <label for="expense-due-date">Data de Vencimento</label>
+                  <input type="date" id="expense-due-date">
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="expense-installment"> Parcelado
+                  </label>
+                </div>
+                <div class="form-group installment-fields hidden">
+                  <label for="expense-installments-count">Nº de Parcelas</label>
+                  <input type="number" id="expense-installments-count" min="2" max="48" value="2">
+                </div>
+                <div class="form-group full">
+                  <label for="expense-notes">Observações</label>
+                  <textarea id="expense-notes" rows="2" placeholder="Observações adicionais..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-save"></i> Salvar Despesa</button>
+                <button type="reset" class="btn btn-outline">Limpar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- CATEGORIAS -->
+        <section id="page-categories" class="page">
+          <div class="page-header">
+            <h2>Categorias</h2>
+            <button class="btn btn-primary" id="btn-new-category"><i class="fa-solid fa-plus"></i> Nova Categoria</button>
+          </div>
+          <div class="categories-grid" id="categories-list"></div>
+        </section>
+
+        <!-- RELATÓRIOS -->
+        <section id="page-reports" class="page">
+          <div class="page-header">
+            <h2>Relatórios</h2>
+          </div>
+          <div class="filters-panel card">
+            <div class="filters-row">
+              <select id="report-type">
+                <option value="daily">Relatório Diário</option>
+                <option value="monthly" selected>Relatório Mensal</option>
+                <option value="yearly">Relatório Anual</option>
+              </select>
+              <input type="date" id="report-date" title="Data de referência">
+              <button class="btn btn-primary" id="btn-generate-report"><i class="fa-solid fa-sync"></i> Gerar</button>
+              <button class="btn btn-outline" id="btn-export-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+              <button class="btn btn-outline" id="btn-export-excel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+            </div>
+          </div>
+          <div class="card" id="report-content">
+            <div id="report-summary" class="report-summary"></div>
+            <div id="report-table" class="report-table"></div>
+          </div>
+        </section>
+
+        <!-- METAS -->
+        <section id="page-goals" class="page">
+          <div class="page-header">
+            <h2>Metas Financeiras</h2>
+            <button class="btn btn-primary" id="btn-new-goal"><i class="fa-solid fa-plus"></i> Nova Meta</button>
+          </div>
+          <div class="goals-grid" id="goals-list"></div>
+        </section>
+
+        <!-- CALENDÁRIO -->
+        <section id="page-calendar" class="page">
+          <div class="page-header">
+            <h2>Calendário Financeiro</h2>
+            <div class="calendar-nav">
+              <button class="btn btn-outline" id="cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
+              <span id="cal-month-year"></span>
+              <button class="btn btn-outline" id="cal-next"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="card">
+            <div id="calendar-grid" class="calendar-grid"></div>
+          </div>
+          <div class="card" id="calendar-day-detail">
+            <h3 id="calendar-day-title">Selecione um dia</h3>
+            <div id="calendar-day-transactions"></div>
+          </div>
+        </section>
+
+        <!-- CARTÕES -->
+        <section id="page-credit-cards" class="page">
+          <div class="page-header">
+            <h2>Cartões de Crédito</h2>
+            <button class="btn btn-primary" id="btn-new-card"><i class="fa-solid fa-plus"></i> Novo Cartão</button>
+          </div>
+          <div class="cards-grid" id="credit-cards-list"></div>
+        </section>
+
+        <!-- PARCELAS -->
+        <section id="page-installments" class="page">
+          <div class="page-header">
+            <h2>Controle de Parcelas</h2>
+          </div>
+          <div class="card">
+            <div id="installments-list" class="installments-list"></div>
+          </div>
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section id="page-settings" class="page">
+          <div class="page-header">
+            <h2>Configurações</h2>
+          </div>
+          <div class="settings-grid">
+            <div class="card">
+              <h3><i class="fa-solid fa-palette"></i> Aparência</h3>
+              <div class="form-group">
+                <label>Tema</label>
+                <select id="settings-theme">
+                  <option value="light">Claro</option>
+                  <option value="dark">Escuro</option>
+                  <option value="auto">Automático</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <h3><i class="fa-solid fa-database"></i> Backup e Restauração</h3>
+              <p>Exporte ou importe todos os seus dados financeiros.</p>
+              <div class="form-actions">
+                <button class="btn btn-primary" id="btn-backup"><i class="fa-solid fa-download"></i> Fazer Backup</button>
+                <label class="btn btn-outline btn-file">
+                  <i class="fa-solid fa-upload"></i> Restaurar Backup
+                  <input type="file" id="btn-restore" accept=".json" hidden>
+                </label>
+              </div>
+            </div>
+            <div class="card danger-zone">
+              <h3><i class="fa-solid fa-exclamation-triangle"></i> Zona de Perigo</h3>
+              <p>Apaga permanentemente todos os dados financeiros.</p>
+              <button class="btn btn-danger" id="btn-clear-data"><i class="fa-solid fa-trash"></i> Limpar Todos os Dados</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Genérico -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal</h3>
+        <button class="btn-icon modal-close"><i class="fa-solid fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/goals.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/credit-card.js"></script>
+  <script src="js/installments.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
