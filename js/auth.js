@@ -41,21 +41,66 @@ const Auth = {
     this.checkSession();
   },
 
-  /** Aviso quando Supabase não está configurado */
+  /** Painel de configuração do Supabase */
   showConfigWarning() {
     const container = document.querySelector('.auth-container');
-    if (!container || document.getElementById('supabase-warning')) return;
+    if (!container || document.getElementById('supabase-setup')) return;
 
-    const warning = document.createElement('div');
-    warning.id = 'supabase-warning';
-    warning.className = 'supabase-warning';
-    warning.innerHTML = `
-      <i class="fa-solid fa-triangle-exclamation"></i>
-      <strong>Supabase não configurado.</strong>
-      Edite o arquivo <code>js/supabase-config.js</code> com sua URL e chave do projeto.
-      Veja o README para instruções.
+    const creds = getSupabaseCredentials();
+    const panel = document.createElement('div');
+    panel.id = 'supabase-setup';
+    panel.className = 'supabase-setup';
+    panel.innerHTML = `
+      <div class="supabase-setup-header">
+        <i class="fa-solid fa-plug"></i>
+        <strong>Configure o Supabase</strong>
+      </div>
+      <ol class="supabase-steps">
+        <li>Crie conta em <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">supabase.com</a> → <strong>New Project</strong></li>
+        <li>Abra <strong>SQL Editor</strong> → cole o arquivo <code>database/supabase-schema.sql</code> → <strong>Run</strong></li>
+        <li>Vá em <strong>Settings → API</strong> e copie URL + anon key abaixo</li>
+      </ol>
+      <form id="supabase-setup-form" class="supabase-setup-form">
+        <div class="form-group auth-field">
+          <label for="setup-url">Project URL</label>
+          <div class="auth-input-wrap">
+            <i class="fa-solid fa-link"></i>
+            <input type="url" id="setup-url" required placeholder="https://xxxxx.supabase.co"
+              value="${creds.url.includes('SUA_URL') ? '' : escapeHtml(creds.url)}">
+          </div>
+        </div>
+        <div class="form-group auth-field">
+          <label for="setup-key">anon public key</label>
+          <div class="auth-input-wrap">
+            <i class="fa-solid fa-key"></i>
+            <input type="text" id="setup-key" required placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+              value="${creds.anonKey.includes('SUA_CHAVE') ? '' : escapeHtml(creds.anonKey)}">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-auth btn-block">
+          <i class="fa-solid fa-check"></i> Salvar e Conectar
+        </button>
+      </form>
+      <p class="supabase-setup-note">
+        Dica: em <strong>Authentication → Email</strong>, desative "Confirm email" para testar mais rápido.
+      </p>
     `;
-    container.prepend(warning);
+    container.prepend(panel);
+
+    document.getElementById('supabase-setup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const url = document.getElementById('setup-url').value.trim();
+      const key = document.getElementById('setup-key').value.trim();
+
+      if (!url.includes('supabase.co')) {
+        showToast('URL inválida. Use o formato https://xxx.supabase.co', 'error');
+        return;
+      }
+
+      saveSupabaseCredentials(url, key);
+      showToast('Supabase configurado! Recarregando...', 'success');
+      setTimeout(() => location.reload(), 800);
+    });
   },
 
   /** Alterna formulários de auth */
