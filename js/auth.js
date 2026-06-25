@@ -5,6 +5,10 @@
 const Auth = {
   /** Inicializa eventos de autenticação */
   init() {
+    if (window.location.protocol === 'file:') {
+      showToast('Abra via servidor local: python -m http.server 8080', 'warning');
+    }
+
     if (!isSupabaseConfigured()) {
       this.showConfigWarning();
     }
@@ -68,6 +72,7 @@ const Auth = {
             <input type="url" id="setup-url" required placeholder="https://xxxxx.supabase.co"
               value="${creds.url.includes('SUA_URL') ? '' : escapeHtml(creds.url)}">
           </div>
+          <small class="field-hint">Settings → API → Project URL (sem barra no final)</small>
         </div>
         <div class="form-group auth-field">
           <label for="setup-key">anon public key</label>
@@ -76,6 +81,7 @@ const Auth = {
             <input type="text" id="setup-key" required placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
               value="${creds.anonKey.includes('SUA_CHAVE') ? '' : escapeHtml(creds.anonKey)}">
           </div>
+          <small class="field-hint">Settings → API → anon public (não use service_role)</small>
         </div>
         <button type="submit" class="btn btn-auth btn-block">
           <i class="fa-solid fa-check"></i> Salvar e Conectar
@@ -87,19 +93,24 @@ const Auth = {
     `;
     container.prepend(panel);
 
-    document.getElementById('supabase-setup-form').addEventListener('submit', (e) => {
+    document.getElementById('supabase-setup-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const url = document.getElementById('setup-url').value.trim();
-      const key = document.getElementById('setup-key').value.trim();
+      const url = document.getElementById('setup-url').value;
+      const key = document.getElementById('setup-key').value;
+      const btn = e.target.querySelector('button[type="submit"]');
 
-      if (!url.includes('supabase.co')) {
-        showToast('URL inválida. Use o formato https://xxx.supabase.co', 'error');
-        return;
+      try {
+        saveSupabaseCredentials(url, key);
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testando conexão...';
+        await testSupabaseConnection();
+        showToast('Supabase configurado! Recarregando...', 'success');
+        setTimeout(() => location.reload(), 800);
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Salvar e Conectar';
+        showToast(err.message, 'error');
       }
-
-      saveSupabaseCredentials(url, key);
-      showToast('Supabase configurado! Recarregando...', 'success');
-      setTimeout(() => location.reload(), 800);
     });
   },
 
@@ -179,9 +190,7 @@ const Auth = {
       showToast(`Bem-vindo, ${AppState.currentUser.name}!`, 'success');
       this.showApp();
     } catch (err) {
-      showToast(err.message === 'Invalid login credentials'
-        ? 'E-mail ou senha incorretos'
-        : err.message, 'error');
+      showToast(getSupabaseAuthErrorMessage(err), 'error');
     }
   },
 
@@ -211,7 +220,10 @@ const Auth = {
       const { data, error } = await getSupabase().auth.signUp({
         email,
         password,
-        options: { data: { name } }
+        options: {
+          data: { name },
+          emailRedirectTo: getAuthRedirectUrl()
+        }
       });
       if (error) throw error;
 
@@ -225,9 +237,7 @@ const Auth = {
         this.showForm('login');
       }
     } catch (err) {
-      showToast(err.message.includes('already registered')
-        ? 'Este e-mail já está cadastrado'
-        : err.message, 'error');
+      showToast(getSupabaseAuthErrorMessage(err), 'error');
     }
   },
 
@@ -243,14 +253,14 @@ const Auth = {
 
     try {
       const { error } = await getSupabase().auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + window.location.pathname
+        redirectTo: getAuthRedirectUrl()
       });
       if (error) throw error;
 
       showToast('Link de recuperação enviado para seu e-mail!', 'success');
       this.showForm('login');
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(getSupabaseAuthErrorMessage(err), 'error');
     }
   },
 
